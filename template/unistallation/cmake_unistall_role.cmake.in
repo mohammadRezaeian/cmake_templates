@@ -1,0 +1,19 @@
+if(NOT EXISTS "@CMAKE_BINARY_DIR@/install_manifest.txt")
+   message(FATAL_ERROR "can't find it")
+endif()
+
+file(READ "@CMAKE_BINARY_DIR@/install_manifest.txt" files)
+string(REGEX REPLACE "\n" ";" files "${files}")
+
+message("${files}")
+
+foreach(file ${files})
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E rm -r ${file}
+        RESULT_VARIABLE return_code
+    )
+
+    if(NOT "${return_code}" STREQUAL 0)
+        message(FATAL_ERROR "Couldn't remove ${file}")
+    endif()
+endforeach()
